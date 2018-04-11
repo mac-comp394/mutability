@@ -4,9 +4,11 @@ module Engine
   end
 
   def self.run_with_history(model, messages)
+  	puts model.inspect
     messages.map do |msg|
-      msg.apply_to(model)
-      model
+      # puts "ENGINE:" + model.inspect
+      model = msg.apply_to(model)
+    model
     end
   end
 end
