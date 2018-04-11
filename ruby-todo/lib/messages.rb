@@ -49,13 +49,18 @@ module Msg
     attr_reader :id, :is_completed 
 
     def apply_to(model)
-      new_model = model.dup
-      new_model.entries.each do |entry|
+      new_entries = []
+      model.entries.each do |entry|
         if entry.id == id
-          entry.completed = is_completed
+          new_entries << Entry.new(id: entry.id, description: entry.description, completed: is_completed)
+        else 
+          new_entries << Entry.new(id: entry.id, description: entry.description, completed: entry.completed) 
         end
       end
-      new_model
+      Model.new(
+        entries: new_entries,
+        new_entry_field: model.new_entry_field, 
+        next_id: model.next_id)
     end
   end
 
@@ -67,19 +72,29 @@ module Msg
     attr_reader :id 
 
     def apply_to(model)
-      new_model = model.dup     
-      new_model.entries.reject! { |e| e.id == id }
-      # puts "DELETE", model.inspect, new_model.inspect
-      new_model
+      new_entries = []
+      model.entries.each do |entry|
+        new_entries << Entry.new(id: entry.id, description: entry.description, completed: entry.completed)
+      end
+      new_entries.reject! { |e| e.id == id }
+      Model.new(
+        entries: new_entries,
+        new_entry_field: model.new_entry_field, 
+        next_id: model.next_id)
     end
   end
 
   class DeleteAllCompleted
     def apply_to(model)
-      new_model = model.dup     
-      new_model.entries.reject!(&:completed)
-      new_model
-      # model.dup.entries.reject!(&:completed)
+      new_entries = []
+      model.entries.each do |entry|
+        new_entries << Entry.new(id: entry.id, description: entry.description, completed: entry.completed)
+      end
+      new_entries.reject!(&:completed)
+      Model.new(
+        entries: new_entries,
+        new_entry_field: model.new_entry_field, 
+        next_id: model.next_id)
     end
   end
 
