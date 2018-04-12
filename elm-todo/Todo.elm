@@ -240,7 +240,7 @@ viewEntry todo =
                 ]
                 []
             , label
-                [ onDoubleClick (EditingEntry todo.id True) ]
+                [ ]
                 [ text todo.description ]
             , button
                 [ class "destroy"
