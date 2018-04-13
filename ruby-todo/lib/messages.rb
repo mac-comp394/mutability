@@ -2,13 +2,17 @@ module Msg
 
   class Add
     def apply_to(model)
-      unless model.new_entry_field.blank?
-        model.entries << Entry.new(
+      new_entries = model.entries
+      unless model.new_entry_field.blank? 
+        new_entries << Entry.new(
           description: model.new_entry_field,
           id: model.next_id)
       end
-      model.next_id += 1
-      model.new_entry_field = ""
+      new_model = Model.new(
+        entries: new_entries,
+        new_entry_field: "",
+        next_id: model.next_id + 1)
+      new_model
     end
   end
 
@@ -20,7 +24,10 @@ module Msg
     attr_reader :str 
 
     def apply_to(model)
-      model.new_entry_field = str
+      new_model = Model.new(
+        entries: model.entries,
+        new_entry_field: str)
+      new_model
     end
   end
 
@@ -32,11 +39,17 @@ module Msg
     attr_reader :id, :is_completed 
 
     def apply_to(model)
-      model.entries.each do |entry|
+      model_entries = model.entries
+      model_entries.each do |entry|
         if entry.id == id
           entry.completed = is_completed
         end
       end
+      new_model = Model.new(
+        entries: model_entries,
+        new_entry_field: model.new_entry_field,
+        next_id: model.next_id)
+      new_model
     end
   end
 
@@ -48,13 +61,23 @@ module Msg
     attr_reader :id 
 
     def apply_to(model)
-      model.entries.reject! { |e| e.id == id }
+      old_entries = model.entries
+      new_model = Model.new(
+        entries: old_entries.reject! { |e| e.id == id },
+        new_entry_field: model.new_entry_field,
+        next_id: model.next_id)
+      new_model
     end
   end
 
   class DeleteAllCompleted
     def apply_to(model)
-      model.entries.reject!(&:completed)
+      old_entries = model.entries
+      new_model = Model.new(
+        entries: old_entries.reject!(&:completed),
+        new_entry_field: model.new_entry_field,
+        next_id: model.next_id)
+      new_model
     end
   end
 
