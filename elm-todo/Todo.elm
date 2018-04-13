@@ -74,11 +74,11 @@ to them.
 -}
 type Msg
     = UpdateNewEntryField String
-    | UpdateEntry Int String
     | Add
     | Delete Int
     | DeleteAllCompleted
     | Check Int Bool
+
 
 
 -- How we update our Model on a given Msg?
@@ -98,16 +98,6 @@ update msg model =
 
         UpdateNewEntryField str ->
             { model | newEntryField = str }
-
-        UpdateEntry id task ->
-            let
-                updateEntry t =
-                    if t.id == id then
-                        { t | description = task }
-                    else
-                        t
-            in
-                { model | entries = List.map updateEntry model.entries }
 
         Check id isCompleted ->
             let

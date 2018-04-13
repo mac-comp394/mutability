@@ -2,21 +2,21 @@ module Msg
 
   class Add
     def apply_to(model)
+      # copy model.entries to a new array of entries
+      new_entries = []
+      model.entries.each do |entry|
+        new_entries << Entry.new(
+          id: entry.id, 
+          description: entry.description, 
+          completed: entry.completed)
+      end
 
-      new_entries = model.entries.dup
       unless model.new_entry_field.blank?
-        # model.entries << Entry.new(
-        #   description: model.new_entry_field,
-        #   id: model.next_id)
-        new_entry = Entry.new(
+        new_entries << Entry.new(
           description: model.new_entry_field,
           id: model.next_id)
-
-        new_entries << new_entry
       end
-      # model.next_id += 1
-      # model.new_entry_field = ""
-      # puts "ADD:" + new_entries.to_s
+
       Model.new(
         entries: new_entries, 
         new_entry_field: "", 
@@ -32,10 +32,17 @@ module Msg
     attr_reader :str 
 
     def apply_to(model)
-      # model.new_entry_field = str
+      # copy model.entries to a new array of entries
+      new_entries = []
+      model.entries.each do |entry|
+        new_entries << Entry.new(
+          id: entry.id, 
+          description: entry.description, 
+          completed: entry.completed)
+      end
 
       Model.new(
-        entries: model.entries.dup, # dup or not
+        entries: new_entries,
         new_entry_field: str, 
         next_id: model.next_id)
     end
@@ -51,11 +58,11 @@ module Msg
     def apply_to(model)
       new_entries = []
       model.entries.each do |entry|
-        if entry.id == id
-          new_entries << Entry.new(id: entry.id, description: entry.description, completed: is_completed)
-        else 
-          new_entries << Entry.new(id: entry.id, description: entry.description, completed: entry.completed) 
-        end
+        new_complete_status = (entry.id == id) ? is_completed : entry.completed
+        new_entries << Entry.new(
+          id: entry.id, 
+          description: entry.description, 
+          completed: new_complete_status) 
       end
       Model.new(
         entries: new_entries,
@@ -74,7 +81,10 @@ module Msg
     def apply_to(model)
       new_entries = []
       model.entries.each do |entry|
-        new_entries << Entry.new(id: entry.id, description: entry.description, completed: entry.completed)
+        new_entries << Entry.new(
+          id: entry.id, 
+          description: entry.description, 
+          completed: entry.completed)
       end
       new_entries.reject! { |e| e.id == id }
       Model.new(
@@ -88,7 +98,10 @@ module Msg
     def apply_to(model)
       new_entries = []
       model.entries.each do |entry|
-        new_entries << Entry.new(id: entry.id, description: entry.description, completed: entry.completed)
+        new_entries << Entry.new(
+          id: entry.id, 
+          description: entry.description, 
+          completed: entry.completed)
       end
       new_entries.reject!(&:completed)
       Model.new(

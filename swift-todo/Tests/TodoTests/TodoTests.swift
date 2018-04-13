@@ -27,7 +27,6 @@ class TodoTests: XCTestCase {
              .add
          ])
         
-         print(newModel.newEntryField)
          XCTAssertEqual(3, newModel.entries.count)
          let newEntry = newModel.entries.last!
          XCTAssertEqual(12, newEntry.id)
