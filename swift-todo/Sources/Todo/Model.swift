@@ -11,7 +11,7 @@ struct Model {
     }
 }
 
-class Entry {
+struct Entry {
     var id: Int
     var description: String
     var completed: Bool
