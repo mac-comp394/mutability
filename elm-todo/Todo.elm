@@ -276,8 +276,7 @@ viewControlsClear entriesCompleted =
 infoFooter : Html msg
 infoFooter =
     footer [ class "info" ]
-        [ p [] [ text "Double-click to edit a todo" ]
-        , p []
+        [ p []
             [ text "Written by "
             , a [ href "https://github.com/evancz" ] [ text "Evan Czaplicki" ]
             ]
