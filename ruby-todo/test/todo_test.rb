@@ -27,11 +27,17 @@ describe "Todo list" do
 
   describe Msg::Add do
     it "appends a new entry" do
+
+      # print model.inspect
+      # print "\n\n\n"
+
       new_model = Engine.run(model, [
         Msg::UpdateNewEntryField.new("hop on one foot"),
         Msg::Add.new
       ])
 
+      # print new_model.inspect
+      # print "\n\n\n"
       assert_equal 3, new_model.entries.size
       new_entry = new_model.entries.last
       assert_equal 12, new_entry.id
@@ -91,7 +97,7 @@ describe "Todo list" do
   end
 
   it "supports time travel" do
-    skip "Mutable model does not support time travel"
+    # skip "Mutable model does not support time travel"
 
     actual_history = Engine.run_with_history(Model.new, [
       Msg::UpdateNewEntryField.new("go forward in time"),
@@ -104,7 +110,7 @@ describe "Todo list" do
       Msg::UpdateNewEntryField.new("go backward in time"),
       Msg::Add.new,
       Msg::Check.new(0, true),
-      Msg::Check.new(3, true),
+      Msg::Check.new(3, true), 
       Msg::Check.new(3, false),
       Msg::DeleteAllCompleted.new
     ])
