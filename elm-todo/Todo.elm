@@ -74,7 +74,6 @@ to them.
 -}
 type Msg
     = UpdateNewEntryField String
-    | UpdateEntry Int String
     | Add
     | Delete Int
     | DeleteAllCompleted
@@ -98,16 +97,6 @@ update msg model =
 
         UpdateNewEntryField str ->
             { model | newEntryField = str }
-
-        UpdateEntry id task ->
-            let
-                updateEntry t =
-                    if t.id == id then
-                        { t | description = task }
-                    else
-                        t
-            in
-                { model | entries = List.map updateEntry model.entries }
 
         Check id isCompleted ->
             let
@@ -232,14 +221,6 @@ viewEntry todo =
                 ]
                 []
             ]
-        , input
-            [ class "edit"
-            , value todo.description
-            , name "title"
-            , id ("todo-" ++ toString todo.id)
-            , onInput (UpdateEntry todo.id)
-            ]
-            []
         ]
 
 
