@@ -14,30 +14,52 @@ enum Message {
     case delete(Int)
     case deleteAllCompleted
 
-    func apply(to model: Model) {
+    func apply(to model: Model) -> Model {
         switch(self) {
             case .add:
                 if !model.newEntryField.isBlank() {
-                    model.entries.append(Entry(id: model.nextID, description: model.newEntryField))
+                    return Model(nextID: model.nextID + 1,
+                                          newEntryField: "",
+                                          entries: model.entries + [Entry(id: model.nextID,
+                                                                          description: model.newEntryField)])
                 }
-                model.nextID += 1
-                model.newEntryField = ""
+                return Model(nextID: model.nextID + 1,
+                             newEntryField: "",
+                             entries: model.entries)
 
             case .updateNewEntryField(let str):
-                model.newEntryField = str
+                return Model(nextID: model.nextID,
+                                      newEntryField: str,
+                                      entries: model.entries)
 
             case .check(let id, let isCompleted):
-                for entry in model.entries {
+                var model_entries = model.entries
+                for (index, entry) in model_entries.enumerated() {
                     if(entry.id == id) {
-                        entry.completed = isCompleted
+                        let new_entry = Entry(id: entry.id,
+                                              description: entry.description,
+                                              completed: isCompleted)
+                        model_entries[index] = new_entry
+                        return Model(nextID: model.nextID,
+                                              newEntryField: model.newEntryField,
+                                              entries: model_entries)
                     }
                 }
+                return model
 
             case .delete(let id):
-                model.entries.remove { $0.id == id }
+                var model_entries = model.entries
+                model_entries.remove { $0.id == id }
+                return Model(nextID: model.nextID,
+                                  newEntryField: model.newEntryField,
+                                  entries: model_entries)
 
             case .deleteAllCompleted:
-                model.entries.remove { $0.completed }
+                var model_entries = model.entries
+                model_entries.remove { $0.completed }
+                return Model(nextID: model.nextID,
+                                      newEntryField: model.newEntryField,
+                                      entries: model_entries)
         }
     }
 }
