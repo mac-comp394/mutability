@@ -14,30 +14,40 @@ enum Message {
     case delete(Int)
     case deleteAllCompleted
 
-    func apply(to model: Model) {
+    func apply(to model: Model) -> Model {
         switch(self) {
             case .add:
+                var model = model
                 if !model.newEntryField.isBlank() {
                     model.entries.append(Entry(id: model.nextID, description: model.newEntryField))
                 }
                 model.nextID += 1
                 model.newEntryField = ""
+                return model
 
             case .updateNewEntryField(let str):
+                var model = model
                 model.newEntryField = str
+                return model
 
             case .check(let id, let isCompleted):
-                for entry in model.entries {
-                    if(entry.id == id) {
-                        entry.completed = isCompleted
+                var model = model
+                for (index, _) in model.entries.enumerated() {
+                    if(model.entries[index].id == id) {
+                        model.entries[index].completed = isCompleted
                     }
                 }
+                return model
 
             case .delete(let id):
+                var model = model
                 model.entries.remove { $0.id == id }
+                return model
 
             case .deleteAllCompleted:
+                var model = model
                 model.entries.remove { $0.completed }
+                return model
         }
     }
 }
