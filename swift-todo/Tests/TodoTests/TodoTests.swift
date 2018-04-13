@@ -152,7 +152,7 @@ class TodoTests: XCTestCase {
 //            }
 //            
 //            print()
-//             XCTAssertEqual(expected, actual, "History mismatch at step \(index)")
+             XCTAssertEqual(expected, actual, "History mismatch at step \(index)")
          }
     }
 
