@@ -20,7 +20,7 @@ class Entry
     @description, @id, @completed = description, id, completed
   end
 
-  attr_accessor :description, :completed, :id
+  attr_reader :description, :completed, :id
 
   def ==(other)
     !other.nil? &&

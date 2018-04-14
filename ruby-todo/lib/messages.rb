@@ -2,17 +2,16 @@ module Msg
 
   class Add
     def apply_to(model)
-      new_entries = model.entries
+      model_entries = model.entries.clone
       unless model.new_entry_field.blank? 
-        new_entries << Entry.new(
+        model_entries << Entry.new(
           description: model.new_entry_field,
           id: model.next_id)
       end
-      new_model = Model.new(
-        entries: new_entries,
+      Model.new(
+        entries: model_entries,
         new_entry_field: "",
         next_id: model.next_id + 1)
-      new_model
     end
   end
 
@@ -24,10 +23,10 @@ module Msg
     attr_reader :str 
 
     def apply_to(model)
-      new_model = Model.new(
-        entries: model.entries,
-        new_entry_field: str)
-      new_model
+      Model.new(
+        entries: model.entries.clone,
+        new_entry_field: str,
+        next_id: model.next_id)
     end
   end
 
@@ -39,17 +38,19 @@ module Msg
     attr_reader :id, :is_completed 
 
     def apply_to(model)
-      model_entries = model.entries
-      model_entries.each do |entry|
+      model_entries = model.entries.clone
+      model_entries.each.with_index do |entry, index|
         if entry.id == id
-          entry.completed = is_completed
+          model_entries[index] = Entry.new(
+            description: entry.description,
+            id: entry.id,
+            completed: is_completed)
         end
       end
-      new_model = Model.new(
+      Model.new(
         entries: model_entries,
         new_entry_field: model.new_entry_field,
         next_id: model.next_id)
-      new_model
     end
   end
 
@@ -61,23 +62,23 @@ module Msg
     attr_reader :id 
 
     def apply_to(model)
-      old_entries = model.entries
-      new_model = Model.new(
-        entries: old_entries.reject! { |e| e.id == id },
+      model_entries = model.entries.clone
+      model_entries.reject! { |e| e.id == id }
+      Model.new(
+        entries: model_entries,
         new_entry_field: model.new_entry_field,
         next_id: model.next_id)
-      new_model
     end
   end
 
   class DeleteAllCompleted
     def apply_to(model)
-      old_entries = model.entries
-      new_model = Model.new(
-        entries: old_entries.reject!(&:completed),
+      model_entries = model.entries.clone
+      model_entries.reject!(&:completed)
+      Model.new(
+        entries: model_entries,
         new_entry_field: model.new_entry_field,
         next_id: model.next_id)
-      new_model
     end
   end
 
