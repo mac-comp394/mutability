@@ -35,7 +35,7 @@ module Msg
       #   digit + 1
       # end == [2,3,4,5]
 
-      Model.new(new_entry_field: model.new_entry_field, entries: model.entries.clone, next_id: model.next_id, entries: model.entries.clone.map do |entry|
+      Model.new(new_entry_field: model.new_entry_field, next_id: model.next_id, entries: model.entries.clone.map do |entry|
         if entry.id == id
           entry = Entry.new(id: id, description: entry.description, completed: is_completed)
         end

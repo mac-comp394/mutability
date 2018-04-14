@@ -7,6 +7,17 @@
 
 import Foundation
 
+//array = [a,b,c]
+//
+//map (function)
+//array: a -> function(a) -> x
+//
+//
+//function = { y in
+//
+//    return x
+//}
+
 enum Message {
     case add
     case updateNewEntryField(String)
@@ -14,30 +25,37 @@ enum Message {
     case delete(Int)
     case deleteAllCompleted
 
-    func apply(to model: Model) {
+    func apply(to model: Model) -> Model {
+        var mutableModel = model
+        
         switch(self) {
             case .add:
                 if !model.newEntryField.isBlank() {
-                    model.entries.append(Entry(id: model.nextID, description: model.newEntryField))
+                    mutableModel.entries.append(Entry(id: model.nextID, description: model.newEntryField))
                 }
-                model.nextID += 1
-                model.newEntryField = ""
+                
+                mutableModel.nextID += 1
+                mutableModel.newEntryField = ""
 
             case .updateNewEntryField(let str):
-                model.newEntryField = str
+                mutableModel.newEntryField = str
 
             case .check(let id, let isCompleted):
-                for entry in model.entries {
+                mutableModel.entries = mutableModel.entries.map { entry in
+                    var mutableEntry = entry
                     if(entry.id == id) {
-                        entry.completed = isCompleted
+                        mutableEntry.id = id
+                        mutableEntry.completed = isCompleted
                     }
+                    return mutableEntry
                 }
 
             case .delete(let id):
-                model.entries.remove { $0.id == id }
+                mutableModel.entries.remove { $0.id == id }
 
             case .deleteAllCompleted:
-                model.entries.remove { $0.completed }
+                mutableModel.entries.remove { $0.completed }
         }
+        return mutableModel
     }
 }
