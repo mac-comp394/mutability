@@ -14,30 +14,38 @@ enum Message {
     case delete(Int)
     case deleteAllCompleted
 
-    func apply(to model: Model) {
-        switch(self) {
+    func apply(to model: Model) -> Model {
+        switch (self) {
             case .add:
+                var newEntries = model.entries
                 if !model.newEntryField.isBlank() {
-                    model.entries.append(Entry(id: model.nextID, description: model.newEntryField))
+                    newEntries.append(Entry(id: model.nextID, description: model.newEntryField))
                 }
-                model.nextID += 1
-                model.newEntryField = ""
+                return Model(nextID: model.nextID + 1, entries: newEntries)
 
             case .updateNewEntryField(let str):
-                model.newEntryField = str
+                return Model(nextID: model.nextID, newEntryField: str, entries: model.entries)
 
             case .check(let id, let isCompleted):
+                var newEntries = [Entry]()
                 for entry in model.entries {
-                    if(entry.id == id) {
-                        entry.completed = isCompleted
+                    if entry.id == id {
+                        newEntries.append(Entry(id: entry.id, description: entry.description, completed: isCompleted))
+                    } else {
+                        newEntries.append(Entry(id: entry.id, description: entry.description, completed: entry.completed))
                     }
                 }
+                return Model(nextID: model.nextID, newEntryField: model.newEntryField, entries: newEntries)
 
             case .delete(let id):
-                model.entries.remove { $0.id == id }
+                var newEntries = model.entries
+                newEntries.remove { $0.id == id }
+                return Model(nextID: model.nextID, newEntryField: model.newEntryField, entries: newEntries)
 
             case .deleteAllCompleted:
-                model.entries.remove { $0.completed }
+                var newEntries = model.entries
+                newEntries.remove { $0.completed }
+                return Model(nextID: model.nextID, newEntryField: model.newEntryField, entries: newEntries)
         }
     }
 }
