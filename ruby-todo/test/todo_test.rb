@@ -121,7 +121,7 @@ describe "Todo list" do
           Entry.new(id: 0, description: "go forward in time", completed: false)
       ]),
       Model.new(next_id: 3, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: false), 
+          Entry.new(id: 0, description: "go forward in time", completed: false),
           Entry.new(id: 2, description: "delete this item", completed: false)
       ]),
       Model.new(next_id: 3, new_entry_field: "", entries: [
@@ -134,19 +134,19 @@ describe "Todo list" do
           Entry.new(id: 0, description: "go forward in time", completed: false)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: false), 
+          Entry.new(id: 0, description: "go forward in time", completed: false),
           Entry.new(id: 3, description: "go backward in time", completed: false)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: true), 
+          Entry.new(id: 0, description: "go forward in time", completed: true),
           Entry.new(id: 3, description: "go backward in time", completed: false)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: true), 
+          Entry.new(id: 0, description: "go forward in time", completed: true),
           Entry.new(id: 3, description: "go backward in time", completed: true)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: true), 
+          Entry.new(id: 0, description: "go forward in time", completed: true),
           Entry.new(id: 3, description: "go backward in time", completed: false)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
