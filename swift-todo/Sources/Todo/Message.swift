@@ -14,30 +14,41 @@ enum Message {
     case delete(Int)
     case deleteAllCompleted
 
-    func apply(to model: Model) {
+    func apply(to model: Model) -> Model {
         switch(self) {
             case .add:
+                var new_entries = model.entries
                 if !model.newEntryField.isBlank() {
-                    model.entries.append(Entry(id: model.nextID, description: model.newEntryField))
+                    new_entries.append(Entry(id: model.nextID, description: model.newEntryField))
                 }
-                model.nextID += 1
-                model.newEntryField = ""
+                return Model(nextID: model.nextID + 1, entries: new_entries)
 
+            
             case .updateNewEntryField(let str):
-                model.newEntryField = str
+                return Model(nextID: model.nextID, newEntryField: str, entries: model.entries)
 
+            
             case .check(let id, let isCompleted):
-                for entry in model.entries {
-                    if(entry.id == id) {
-                        entry.completed = isCompleted
+                let new_entries = model.entries.map({ (entry: Entry) -> Entry in
+                    if (entry.id == id){
+                        return Entry(id: entry.id, description: entry.description, completed: isCompleted)
                     }
-                }
+                    else {
+                        return entry
+                    }
+                })
+                
+                return Model(nextID: model.nextID, newEntryField: model.newEntryField, entries: new_entries)
 
+            
             case .delete(let id):
-                model.entries.remove { $0.id == id }
+                let new_entries = model.entries.filter({ $0.id != id })
+                return Model(nextID: model.nextID, newEntryField: model.newEntryField, entries: new_entries)
+
 
             case .deleteAllCompleted:
-                model.entries.remove { $0.completed }
+                let new_entries = model.entries.filter({ !$0.completed })
+                return Model(nextID: model.nextID, newEntryField: model.newEntryField, entries: new_entries)
         }
     }
 }
