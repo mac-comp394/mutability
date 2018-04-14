@@ -4,9 +4,10 @@ module Engine
   end
 
   def self.run_with_history(model, messages)
+    model0 = model
     messages.map do |msg|
-      msg.apply_to(model)
-      model
+      model0 = msg.apply_to(model0)
+      model0
     end
   end
 end
