@@ -5,8 +5,9 @@ module Engine
 
   def self.run_with_history(model, messages)
     messages.map do |msg|
-      msg.apply_to(model)
-      model
+      model_copy = model.clone
+      msg.apply_to(model_copy)
+      model_copy
     end
   end
 end
