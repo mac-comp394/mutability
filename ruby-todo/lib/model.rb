@@ -5,7 +5,7 @@ class Model
       (entries.lazy.map(&:id).max || -1) + 1
   end
 
-  attr_accessor :entries, :new_entry_field, :next_id
+  attr_reader :entries, :new_entry_field, :next_id
 
   def ==(other)
     !other.nil? &&
@@ -20,12 +20,16 @@ class Entry
     @description, @id, @completed = description, id, completed
   end
 
-  attr_accessor :description, :completed, :id
+  attr_reader :description, :completed, :id
 
   def ==(other)
     !other.nil? &&
       self.id == other.id &&
       self.description == other.description &&
       self.completed == other.completed
+  end
+
+  def printEntry
+    print " ENTRY: ", @id, " ", @description, " ", @completed
   end
 end
