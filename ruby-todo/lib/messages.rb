@@ -36,21 +36,9 @@ module Msg
     def apply_to(model)
       model.entries.each do |entry|
         if entry.id == @id
-          # print "------", @id, entry.description, @is_completed, "---"
           new_entry = Entry.new(id: @id, description: entry.description, completed: @is_completed)
-          print "\n NEW Entry: "
-          new_entry.printEntry
-          print "\n"
-          new_model = Model.new(entries: model.entries - [entry])
-          # print " model: \n"
-          # new_model.entries.each do |e|
-          #  e.printEntry
-          # end
-          new_model.entries << new_entry
-          print " New model: \n"
-          new_model.entries.each do |e|
-           e.printEntry
-          end
+          model.entries[model.entries.index(entry)] = new_entry
+          new_model = Model.new(entries: model.entries)
           return new_model
         end
       end
@@ -66,14 +54,16 @@ module Msg
     attr_reader :id 
 
     def apply_to(model)
-      new_model = model.entries.reject! { |e| e.id == id }
+      new_entries = model.entries.reject! { |e| e.id == id }
+      new_model = Model.new(entries: new_entries)
       new_model
     end
   end
 
   class DeleteAllCompleted
     def apply_to(model)
-      new_model = model.entries.reject!(&:completed)
+      new_entries = model.entries.reject!(&:completed)
+      new_model = Model.new(entries: new_entries)
       new_model
     end
   end

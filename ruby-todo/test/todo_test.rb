@@ -91,7 +91,7 @@ describe "Todo list" do
   end
 
   it "supports time travel" do
-    skip "Mutable model does not support time travel"
+    # skip "Mutable model does not support time travel"
 
     actual_history = Engine.run_with_history(Model.new, [
       Msg::UpdateNewEntryField.new("go forward in time"),
@@ -99,14 +99,14 @@ describe "Todo list" do
       Msg::Add.new,  # no effect
       Msg::UpdateNewEntryField.new("delete this item"),
       Msg::Add.new,
-      Msg::Delete.new(2),
-      Msg::UpdateNewEntryField.new("go in time"),
-      Msg::UpdateNewEntryField.new("go backward in time"),
-      Msg::Add.new,
-      Msg::Check.new(0, true),
-      Msg::Check.new(3, true),
-      Msg::Check.new(3, false),
-      Msg::DeleteAllCompleted.new
+      # Msg::Delete.new(2),
+      # Msg::UpdateNewEntryField.new("go in time"),
+      # Msg::UpdateNewEntryField.new("go backward in time"),
+      # Msg::Add.new,
+      # Msg::Check.new(0, true),
+      # Msg::Check.new(3, true),
+      # Msg::Check.new(3, false),
+      # Msg::DeleteAllCompleted.new
     ])
 
     expected_history = [
@@ -124,34 +124,34 @@ describe "Todo list" do
           Entry.new(id: 0, description: "go forward in time", completed: false), 
           Entry.new(id: 2, description: "delete this item", completed: false)
       ]),
-      Model.new(next_id: 3, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: false)
-      ]),
-      Model.new(next_id: 3, new_entry_field: "go in time", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: false)
-      ]),
-      Model.new(next_id: 3, new_entry_field: "go backward in time", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: false)
-      ]),
-      Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: false), 
-          Entry.new(id: 3, description: "go backward in time", completed: false)
-      ]),
-      Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: true), 
-          Entry.new(id: 3, description: "go backward in time", completed: false)
-      ]),
-      Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: true), 
-          Entry.new(id: 3, description: "go backward in time", completed: true)
-      ]),
-      Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: true), 
-          Entry.new(id: 3, description: "go backward in time", completed: false)
-      ]),
-      Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 3, description: "go backward in time", completed: false)
-      ]),
+      # Model.new(next_id: 3, new_entry_field: "", entries: [
+      #     Entry.new(id: 0, description: "go forward in time", completed: false)
+      # ]),
+      # Model.new(next_id: 3, new_entry_field: "go in time", entries: [
+      #     Entry.new(id: 0, description: "go forward in time", completed: false)
+      # ]),
+      # Model.new(next_id: 3, new_entry_field: "go backward in time", entries: [
+      #     Entry.new(id: 0, description: "go forward in time", completed: false)
+      # ]),
+      # Model.new(next_id: 4, new_entry_field: "", entries: [
+      #     Entry.new(id: 0, description: "go forward in time", completed: false), 
+      #     Entry.new(id: 3, description: "go backward in time", completed: false)
+      # ]),
+      # Model.new(next_id: 4, new_entry_field: "", entries: [
+      #     Entry.new(id: 0, description: "go forward in time", completed: true), 
+      #     Entry.new(id: 3, description: "go backward in time", completed: false)
+      # ]),
+      # Model.new(next_id: 4, new_entry_field: "", entries: [
+      #     Entry.new(id: 0, description: "go forward in time", completed: true), 
+      #     Entry.new(id: 3, description: "go backward in time", completed: true)
+      # ]),
+      # Model.new(next_id: 4, new_entry_field: "", entries: [
+      #     Entry.new(id: 0, description: "go forward in time", completed: true), 
+      #     Entry.new(id: 3, description: "go backward in time", completed: false)
+      # ]),
+      # Model.new(next_id: 4, new_entry_field: "", entries: [
+      #     Entry.new(id: 3, description: "go backward in time", completed: false)
+      # ]),
     ]
 
     # We could just do `assert_equal expected_history, actual_history`,
