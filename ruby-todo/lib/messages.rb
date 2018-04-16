@@ -2,13 +2,21 @@ module Msg
 
   class Add
     def apply_to(model)
+
+      entries = model.entries.dup
+
       unless model.new_entry_field.blank?
-        model.entries << Entry.new(
+        entries << Entry.new(
           description: model.new_entry_field,
           id: model.next_id)
       end
-      model.next_id += 1
-      model.new_entry_field = ""
+
+      new_model = Model.new(
+        entries: entries,
+        new_entry_field: "",
+        next_id: model.next_id + 1)
+      new_model
+
     end
   end
 
@@ -20,7 +28,11 @@ module Msg
     attr_reader :str 
 
     def apply_to(model)
-      model.new_entry_field = str
+      new_model = Model.new(
+        entries: model.entries,
+        new_entry_field: str,
+        next_id: model.next_id)
+      new_model
     end
   end
 
@@ -32,11 +44,27 @@ module Msg
     attr_reader :id, :is_completed 
 
     def apply_to(model)
-      model.entries.each do |entry|
+      entries = model.entries.dup
+
+      new_entries = []
+
+      entries.each do |entry|
         if entry.id == id
-          entry.completed = is_completed
+          new_entries.push(Entry.new(
+            id: entry.id,
+            description: entry.description, 
+            completed: is_completed))
+        else
+          new_entries.push(entry)
         end
       end
+
+      new_model = Model.new(
+        entries: new_entries,
+        new_entry_field: model.new_entry_field,
+        next_id: model.next_id)
+      new_model
+
     end
   end
 
@@ -48,13 +76,30 @@ module Msg
     attr_reader :id 
 
     def apply_to(model)
-      model.entries.reject! { |e| e.id == id }
+      entries = model.entries.dup
+
+      entries.reject! { |e| e.id == id }
+
+      new_model = Model.new(
+        entries: entries,
+        new_entry_field: model.new_entry_field,
+        next_id: model.next_id)
+      new_model
     end
   end
 
   class DeleteAllCompleted
     def apply_to(model)
-      model.entries.reject!(&:completed)
+
+      entries = model.entries.dup
+
+      entries.reject!(&:completed)
+
+      new_model = Model.new(
+        entries: entries,
+        new_entry_field: model.new_entry_field,
+        next_id: model.next_id)
+      new_model
     end
   end
 

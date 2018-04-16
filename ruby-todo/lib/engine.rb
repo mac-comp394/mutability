@@ -4,9 +4,12 @@ module Engine
   end
 
   def self.run_with_history(model, messages)
+
+  	new_model = model
+
     messages.map do |msg|
-      msg.apply_to(model)
-      model
+      new_model = msg.apply_to(new_model)
+      new_model
     end
   end
 end
