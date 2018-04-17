@@ -17,26 +17,26 @@ enum Message {
     func apply(to model: Model) -> Model {
         switch(self) {
             case .add:
-                var newEntries = model.entries
-                var newNextID = model.nextID
                 if !model.newEntryField.isBlank() {
+                    var newEntries = model.entries
                     newEntries.append(Entry(id: model.nextID, description: model.newEntryField))
-                    newNextID += 1
+                    return Model(nextID: (model.nextID + 1), newEntryField: "", entries: newEntries)
                 }
-                return Model(nextID: newNextID, newEntryField: "", entries: newEntries)
+                return model
 
             case .updateNewEntryField(let str):
                 return Model(nextID: model.nextID, newEntryField: str, entries: model.entries)
 
             case .check(let id, let isCompleted):
                 var newEntries = model.entries
-                for entry in model.entries {
+                for entry in newEntries {
                     if(entry.id == id) {
                         let i = newEntries.index(of: entry)
                         newEntries[i!] = Entry(id: id, description: entry.description, completed: isCompleted)
+                        return Model(nextID: model.nextID, newEntryField: model.newEntryField, entries: newEntries)
                     }
                 }
-                return Model(nextID: model.nextID, newEntryField: model.newEntryField, entries: newEntries)
+                return model
 
             case .delete(let id):
                 var newEntries = model.entries
