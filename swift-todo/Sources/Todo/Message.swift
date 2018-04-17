@@ -18,13 +18,11 @@ enum Message {
         var newModel = model
         switch(self) {
             case .add:
-                let nextID = model.nextID + 1
-                let newField = ""
                 var entries = [] + model.entries
                 if !model.newEntryField.isBlank() {
                     entries.append(Entry(id: model.nextID, description: model.newEntryField))
                 }
-                newModel = Model.init(nextID: nextID, newEntryField: newField, entries: entries)
+                newModel = Model.init(nextID: model.nextID + 1, newEntryField: "", entries: entries)
 
             case .updateNewEntryField(let str):
                 newModel = Model.init(nextID: model.nextID, newEntryField: str, entries: model.entries)

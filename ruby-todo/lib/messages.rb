@@ -21,7 +21,7 @@ module Msg
     attr_reader :str 
 
     def apply_to(model)
-        new_model = Model.new(entries: [] + model.entries, new_entry_field: str, next_id: model.next_id)
+        new_model = Model.new(entries: [] + model.entries, new_entry_field: @str, next_id: model.next_id)
         new_model
     end
   end
@@ -34,15 +34,15 @@ module Msg
     attr_reader :id, :is_completed 
 
     def apply_to(model)
+      entries = model.entries.dup
       model.entries.each do |entry|
         if entry.id == id
           new_entry = Entry.new(id: id, description: entry.description, completed: is_completed)
-          model.entries[model.entries.index(entry)] = new_entry
-          new_model = Model.new(entries: [] + model.entries, new_entry_field: model.new_entry_field, next_id: model.next_id)
-          return new_model
+          entries[entries.index(entry)] = new_entry
         end
       end
-      model
+      new_model = Model.new(entries: entries, new_entry_field: model.new_entry_field, next_id: model.next_id)
+          return new_model
     end
   end
 
