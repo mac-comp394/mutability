@@ -14,30 +14,39 @@ enum Message {
     case delete(Int)
     case deleteAllCompleted
 
-    func apply(to model: Model) {
+    func apply(to model: Model) -> Model{
+        var newModel = model
         switch(self) {
             case .add:
+                var entries = [] + model.entries
                 if !model.newEntryField.isBlank() {
-                    model.entries.append(Entry(id: model.nextID, description: model.newEntryField))
+                    entries.append(Entry(id: model.nextID, description: model.newEntryField))
                 }
-                model.nextID += 1
-                model.newEntryField = ""
+                newModel = Model.init(nextID: model.nextID + 1, newEntryField: "", entries: entries)
 
             case .updateNewEntryField(let str):
-                model.newEntryField = str
+                newModel = Model.init(nextID: model.nextID, newEntryField: str, entries: model.entries)
 
             case .check(let id, let isCompleted):
+                var entries = [] + model.entries
                 for entry in model.entries {
                     if(entry.id == id) {
-                        entry.completed = isCompleted
+                        let newEntry = Entry.init(id:entry.id, description: entry.description, completed: isCompleted)
+                        entries[entries.index(where: {$0.id == id})!] = newEntry
                     }
                 }
+                newModel = Model.init(nextID: model.nextID, newEntryField: model.newEntryField, entries: entries )
 
             case .delete(let id):
-                model.entries.remove { $0.id == id }
+                var entries = [] + model.entries
+                entries.remove { $0.id == id }
+                newModel = Model.init(nextID: model.nextID, newEntryField: model.newEntryField, entries: entries)
 
             case .deleteAllCompleted:
-                model.entries.remove { $0.completed }
+                var entries = [] + model.entries
+                entries.remove { $0.completed }
+                newModel = Model.init(nextID: model.nextID, newEntryField: model.newEntryField, entries: entries)
         }
+    return newModel
     }
 }

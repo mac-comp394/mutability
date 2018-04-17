@@ -2,13 +2,14 @@ module Msg
 
   class Add
     def apply_to(model)
+      entries = [] + model.entries
+      new_model = Model.new(entries: entries, new_entry_field: "", next_id: model.next_id + 1)
       unless model.new_entry_field.blank?
-        model.entries << Entry.new(
+        entries << Entry.new(
           description: model.new_entry_field,
           id: model.next_id)
       end
-      model.next_id += 1
-      model.new_entry_field = ""
+      return new_model
     end
   end
 
@@ -20,7 +21,8 @@ module Msg
     attr_reader :str 
 
     def apply_to(model)
-      model.new_entry_field = str
+        new_model = Model.new(entries: [] + model.entries, new_entry_field: @str, next_id: model.next_id)
+        new_model
     end
   end
 
@@ -32,11 +34,15 @@ module Msg
     attr_reader :id, :is_completed 
 
     def apply_to(model)
+      entries = model.entries.dup
       model.entries.each do |entry|
         if entry.id == id
-          entry.completed = is_completed
+          new_entry = Entry.new(id: id, description: entry.description, completed: is_completed)
+          entries[entries.index(entry)] = new_entry
         end
       end
+      new_model = Model.new(entries: entries, new_entry_field: model.new_entry_field, next_id: model.next_id)
+          return new_model
     end
   end
 
@@ -48,13 +54,27 @@ module Msg
     attr_reader :id 
 
     def apply_to(model)
-      model.entries.reject! { |e| e.id == id }
+      new_entries = []
+      model.entries.map do |e|
+        if e.id != @id
+          new_entries << e
+        end
+      end
+      new_model = Model.new(entries: new_entries, new_entry_field: model.new_entry_field, next_id: model.next_id)
+      new_model
     end
   end
 
   class DeleteAllCompleted
     def apply_to(model)
-      model.entries.reject!(&:completed)
+      new_entries = []
+      model.entries.map do |e|
+        if ! e.completed 
+          new_entries << e
+        end
+      end
+      new_model = Model.new(entries: new_entries, new_entry_field: model.new_entry_field, next_id: model.next_id)
+      new_model
     end
   end
 
