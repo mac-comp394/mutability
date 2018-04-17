@@ -13,6 +13,15 @@ class Model
       self.next_id == other.next_id &&
       self.entries == other.entries
   end
+
+  def str
+    s = ""
+    @entries.each do |e|
+      s += e.printEntry
+    end
+    s += "next is: #{@new_entry_field} #{@next_id} \n"
+  end
+
 end
 
 class Entry
@@ -30,6 +39,6 @@ class Entry
   end
 
   def printEntry
-    print " ENTRY: ", @id, " ", @description, " ", @completed
+    return " ENTRY: #{@id} #{@description} #{@completed} "
   end
 end
