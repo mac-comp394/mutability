@@ -31,14 +31,12 @@ enum Message {
             
         case .check(let id, let isCompleted):
             var newModel = model
-            for entry in model.entries {
-                if(entry.id == id) {
-                    var newEntry = entry
+            for i in model.entries.indices {
+                if(model.entries[i].id == id) {
+                    var newEntry = model.entries[i]
                     newEntry.completed = isCompleted
-                    var newEntries = model.entries
-                    let i = newEntries.index(of: entry)
-                    newEntries.insert(newEntry, at: i!)
-                    newModel.entries = newEntries
+                    newModel.entries[i] = newEntry
+                    break
                 }
             }
             return newModel
