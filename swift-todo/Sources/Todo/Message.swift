@@ -4,7 +4,6 @@
 //
 //  Created by Paul on 2018/4/4.
 //
-
 import Foundation
 
 enum Message {
@@ -13,31 +12,44 @@ enum Message {
     case check(Int, Bool)
     case delete(Int)
     case deleteAllCompleted
-
-    func apply(to model: Model) {
+    
+    func apply(to model: Model) -> Model {
         switch(self) {
-            case .add:
-                if !model.newEntryField.isBlank() {
-                    model.entries.append(Entry(id: model.nextID, description: model.newEntryField))
+        case .add:
+            var newModel = model
+            if !model.newEntryField.isBlank() {
+                newModel.entries.append(Entry(id: model.nextID, description: model.newEntryField))
+            }
+            newModel.nextID += 1
+            newModel.newEntryField = ""
+            return newModel
+            
+        case .updateNewEntryField(let str):
+            var newModel = model
+            newModel.newEntryField = str
+            return newModel
+            
+        case .check(let id, let isCompleted):
+            var newModel = model
+            for i in model.entries.indices {
+                if(model.entries[i].id == id) {
+                    var newEntry = model.entries[i]
+                    newEntry.completed = isCompleted
+                    newModel.entries[i] = newEntry
+                    break
                 }
-                model.nextID += 1
-                model.newEntryField = ""
-
-            case .updateNewEntryField(let str):
-                model.newEntryField = str
-
-            case .check(let id, let isCompleted):
-                for entry in model.entries {
-                    if(entry.id == id) {
-                        entry.completed = isCompleted
-                    }
-                }
-
-            case .delete(let id):
-                model.entries.remove { $0.id == id }
-
-            case .deleteAllCompleted:
-                model.entries.remove { $0.completed }
+            }
+            return newModel
+            
+        case .delete(let id):
+            var newModel = model
+            newModel.entries.remove { $0.id == id }
+            return newModel
+            
+        case .deleteAllCompleted:
+            var newModel = model
+            newModel.entries.remove { $0.completed }
+            return newModel
         }
     }
 }
