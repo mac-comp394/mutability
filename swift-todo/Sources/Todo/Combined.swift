@@ -142,10 +142,8 @@ extension Array {
 }
 
 
-import XCTest
-@testable import Todo
 
-class TodoTests: XCTestCase {
+class TodoTests {
     var model = Model(
         entries: [
             Entry(id: 10, description: "Pat head"),
@@ -154,15 +152,15 @@ class TodoTests: XCTestCase {
     )
 
     func testModelStartsEmpty() {
-        XCTAssertEqual(true, Model().entries.isEmpty)
-        XCTAssertEqual(0, Model().nextID)
+        XCTAssertEqual_B(true, Model().entries.isEmpty)
+        XCTAssertEqual_I(0, Model().nextID)
     }
 
      func testUpdateNewEntryField() {
          let newModel = Engine.run(on: model, applying: [
              .updateNewEntryField("typing away")
          ])
-         XCTAssertEqual("typing away", newModel.newEntryField)
+         XCTAssertEqual_S("typing away", newModel.newEntryField)
      }
 
      func testAdd() {
@@ -170,11 +168,11 @@ class TodoTests: XCTestCase {
              .updateNewEntryField("hop on one foot"),
              .add
          ])
-         XCTAssertEqual(3, newModel.entries.count)
+         XCTAssertEqual_I(3, newModel.entries.count)
          let newEntry = newModel.entries.last!
-         XCTAssertEqual(12, newEntry.id)
-         XCTAssertEqual("hop on one foot", newEntry.description)
-         XCTAssertEqual(false, newEntry.completed)
+         XCTAssertEqual_I(12, newEntry.id)
+         XCTAssertEqual_S("hop on one foot", newEntry.description)
+         XCTAssertEqual_B(false, newEntry.completed)
      }
 
      func testAddDoesNothingIfFieldIsBlank() {
@@ -185,15 +183,15 @@ class TodoTests: XCTestCase {
              .add
          ])
 
-         XCTAssertEqual(2, newModel.entries.count)
+         XCTAssertEqual_I(2, newModel.entries.count)
      }
 
      func testCheck() {
          let newModel = Engine.run(on: model, applying: [
              .check(10, true),
          ])
-         XCTAssertEqual(true,  newModel.entries[0].completed)
-         XCTAssertEqual(false, newModel.entries[1].completed)
+         XCTAssertEqual_B(true,  newModel.entries[0].completed)
+         XCTAssertEqual_B(false, newModel.entries[1].completed)
      }
 
      func testUncheck() {
@@ -202,15 +200,15 @@ class TodoTests: XCTestCase {
              .check(11, true),
              .check(10, false),
          ])
-         XCTAssertEqual(false, newModel.entries[0].completed)
-         XCTAssertEqual(true,  newModel.entries[1].completed)
+         XCTAssertEqual_B(false, newModel.entries[0].completed)
+         XCTAssertEqual_B(true,  newModel.entries[1].completed)
      }
 
      func testDelete() {
          let newModel = Engine.run(on: model, applying: [
              .delete(10)
          ])
-         XCTAssertEqual([11], newModel.entries.map { $0.id })
+         XCTAssertEqual_A([11], newModel.entries.map { $0.id })
      }
 
      func testDeleteAllCompleted() {
@@ -218,7 +216,7 @@ class TodoTests: XCTestCase {
              .check(10, true),
              .deleteAllCompleted
          ])
-         XCTAssertEqual([11], newModel.entries.map { $0.id })
+         XCTAssertEqual_A([11], newModel.entries.map { $0.id })
      }
 
 /*
@@ -291,4 +289,39 @@ class TodoTests: XCTestCase {
     }
 */
 
+
+    private func XCTAssertEqual_I(_ expectedValue: Int, _ value: Int){
+        if expectedValue != value{
+            print("\(expectedValue) != \(value)")
+        }
+    }
+    private func XCTAssertEqual_B(_ expectedValue: Bool, _ value: Bool){
+        if expectedValue != value{
+            print("\(expectedValue) != \(value)")
+        }
+    }
+    private func XCTAssertEqual_S(_ expectedValue: String, _ value: String){
+        if expectedValue != value{
+            print("\(expectedValue) != \(value)")
+        }
+    }
+    private func XCTAssertEqual_A(_ expectedValue: [Int], _ value: [Int]){
+        if expectedValue != value{
+            print("\(expectedValue) != \(value)")
+        }
+    }
+
 }
+
+
+
+let tests = TodoTests()
+tests.testModelStartsEmpty()
+tests.testUpdateNewEntryField()
+tests.testAdd()
+tests.testAddDoesNothingIfFieldIsBlank()
+tests.testCheck()
+tests.testUncheck()
+tests.testDelete()
+tests.testDeleteAllCompleted()
+
