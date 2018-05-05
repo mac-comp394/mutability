@@ -14,30 +14,39 @@ enum Message {
     case delete(Int)
     case deleteAllCompleted
 
-    func apply(to model: Model) {
+    func apply(to model: Model) -> Model {
         switch(self) {
             case .add:
+                var entriesentriesList = model.entries
                 if !model.newEntryField.isBlank() {
-                    model.entries.append(Entry(id: model.nextID, description: model.newEntryField))
+                    entriesList.append(Entry(id: model.nextID, description: model.newEntryField))
                 }
-                model.nextID += 1
-                model.newEntryField = ""
-
+                return Model(nextID: model.nextID + 1, newEntryField: "", entries: entriesList)
+            
             case .updateNewEntryField(let str):
-                model.newEntryField = str
-
+                return Model(nextID:model.nextID, newEntryField: str, entries: model.entries)
+            
             case .check(let id, let isCompleted):
+                var entriesList = [Entry]()
+				
                 for entry in model.entries {
                     if(entry.id == id) {
-                        entry.completed = isCompleted
+                        entriesList.append(Entry(id: entry.id, description: entry.description, completed: isCompleted))
                     }
                 }
+				
+                return Model(nextID:model.nextID, newEntryField: model.newEntryField, entries: entriesList)
 
             case .delete(let id):
-                model.entries.remove { $0.id == id }
+                var entriesList = model.entries
+                entriesList.remove { $0.id == id }
+                return Model(nextID:model.nextID, newEntryField: model.newEntryField, entries: entriesList)
 
             case .deleteAllCompleted:
-                model.entries.remove { $0.completed }
+                var entriesList = model.entries
+                entriesList.remove { $0.completed }
+                return Model(nextID:model.nextID, newEntryField: model.newEntryField, entries: entriesList)
         }
     }
 }
+

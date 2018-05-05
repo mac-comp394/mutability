@@ -8,5 +8,5 @@ require "minitest/autorun"
 
 # To see full test names when running tests:
 #
-# require "minitest/reporters"
-# Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
+require "minitest/reporters"
+Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
