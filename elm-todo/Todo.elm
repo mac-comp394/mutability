@@ -1,13 +1,10 @@
 port module Todo exposing (..)
 
 {-| TodoMVC implemented in Elm, using plain HTML and CSS for rendering.
-
 This application is broken up into three key parts:
-
   1. Model  - a full definition of the application's state
   2. Update - a way to step the application state forward
   3. View   - a way to visualize our application state with HTML
-
 This clean division of concerns is a core part of Elm. You can read more about
 this in <http://guide.elm-lang.org/architecture/index.html>
 -}
@@ -45,7 +42,6 @@ type alias Model =
 type alias Entry =
     { description : String
     , completed : Bool
-    , editing : Bool
     , id : Int
     }
 
@@ -62,7 +58,6 @@ newEntry : String -> Int -> Entry
 newEntry desc id =
     { description = desc
     , completed = False
-    , editing = False
     , id = id
     }
 
@@ -76,8 +71,6 @@ to them.
 -}
 type Msg
     = UpdateNewEntryField String
-    | EditingEntry Int Bool
-    | UpdateEntry Int String
     | Add
     | Delete Int
     | DeleteAllCompleted
@@ -102,29 +95,6 @@ update msg model =
         UpdateNewEntryField str ->
             { model | newEntryField = str }
 
-        EditingEntry id isEditing ->
-            let
-                updateEntry t =
-                    if t.id == id then
-                        { t | editing = isEditing }
-                    else
-                        t
-
-                focus =
-                    Dom.focus ("todo-" ++ toString id)
-            in
-                { model | entries = List.map updateEntry model.entries }
-
-        UpdateEntry id task ->
-            let
-                updateEntry t =
-                    if t.id == id then
-                        { t | description = task }
-                    else
-                        t
-            in
-                { model | entries = List.map updateEntry model.entries }
-
         Check id isCompleted ->
             let
                 updateEntry t =
@@ -141,10 +111,7 @@ update msg model =
         DeleteAllCompleted ->
             { model | entries = List.filter (not << .completed) model.entries }
 
-
-
 -- VIEW
-
 
 view : Model -> Html Msg
 view model =
@@ -229,7 +196,7 @@ viewKeyedEntry todo =
 viewEntry : Entry -> Html Msg
 viewEntry todo =
     li
-        [ classList [ ( "completed", todo.completed ), ( "editing", todo.editing ) ] ]
+        [ classList [ ( "completed", todo.completed )] ]
         [ div
             [ class "view" ]
             [ input
@@ -240,7 +207,7 @@ viewEntry todo =
                 ]
                 []
             , label
-                [ onDoubleClick (EditingEntry todo.id True) ]
+                []
                 [ text todo.description ]
             , button
                 [ class "destroy"
@@ -248,16 +215,6 @@ viewEntry todo =
                 ]
                 []
             ]
-        , input
-            [ class "edit"
-            , value todo.description
-            , name "title"
-            , id ("todo-" ++ toString todo.id)
-            , onInput (UpdateEntry todo.id)
-            , onBlur (EditingEntry todo.id False)
-            , onEnter (EditingEntry todo.id False)
-            ]
-            []
         ]
 
 
@@ -313,8 +270,8 @@ viewControlsClear entriesCompleted =
 infoFooter : Html msg
 infoFooter =
     footer [ class "info" ]
-        [ p [] [ text "Double-click to edit a todo" ]
-        , p []
+--        [p [] [ text "You can not edit todos. To change a todo, delete it and add a new todo." ]
+        [p []
             [ text "Written by "
             , a [ href "https://github.com/evancz" ] [ text "Evan Czaplicki" ]
             ]
