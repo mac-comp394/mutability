@@ -315,13 +315,27 @@ class TodoTests {
 
 
 
-let tests = TodoTests()
+var tests = TodoTests()
 tests.testModelStartsEmpty()
+
+tests = TodoTests()
 tests.testUpdateNewEntryField()
+
+tests = TodoTests()
 tests.testAdd()
+
+tests = TodoTests()
 tests.testAddDoesNothingIfFieldIsBlank()
+
+tests = TodoTests()
 tests.testCheck()
+
+tests = TodoTests()
 tests.testUncheck()
+
+tests = TodoTests()
 tests.testDelete()
+
+tests = TodoTests()
 tests.testDeleteAllCompleted()
 
