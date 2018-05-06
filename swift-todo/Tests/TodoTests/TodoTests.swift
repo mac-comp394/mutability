@@ -26,6 +26,9 @@ class TodoTests: XCTestCase {
              .updateNewEntryField("hop on one foot"),
              .add
          ])
+
+        print("test test test")
+        print(newModel)
          XCTAssertEqual(3, newModel.entries.count)
          let newEntry = newModel.entries.last!
          XCTAssertEqual(12, newEntry.id)
@@ -77,7 +80,6 @@ class TodoTests: XCTestCase {
          XCTAssertEqual([11], newModel.entries.map { $0.id })
      }
 
-/*
      func testTimeTravel() {
         let actualHistory = Engine.runWithHistory(on: Model(), applying: [
              .updateNewEntryField("go forward in time"),
@@ -145,6 +147,4 @@ class TodoTests: XCTestCase {
              XCTAssertEqual(expected, actual, "History mismatch at step \(index)")
          }
     }
-*/
-
 }
