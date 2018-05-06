@@ -1,18 +1,14 @@
 port module Todo exposing (..)
 
 {-| TodoMVC implemented in Elm, using plain HTML and CSS for rendering.
-
 This application is broken up into three key parts:
-
   1. Model  - a full definition of the application's state
   2. Update - a way to step the application state forward
   3. View   - a way to visualize our application state with HTML
-
 This clean division of concerns is a core part of Elm. You can read more about
 this in <http://guide.elm-lang.org/architecture/index.html>
 -}
 
-import Dom
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -74,6 +70,7 @@ to them.
 -}
 type Msg
     = UpdateNewEntryField String
+    | UpdateEntry Int String
     | Add
     | Delete Int
     | DeleteAllCompleted
@@ -98,7 +95,17 @@ update msg model =
         UpdateNewEntryField str ->
             { model | newEntryField = str }
 
-      Check id isCompleted ->
+        UpdateEntry id task ->
+            let
+                updateEntry t =
+                    if t.id == id then
+                        { t | description = task }
+                    else
+                        t
+            in
+                { model | entries = List.map updateEntry model.entries }
+
+        Check id isCompleted ->
             let
                 updateEntry t =
                     if t.id == id then
@@ -221,6 +228,15 @@ viewEntry todo =
                 ]
                 []
             ]
+        ,
+        input
+            [ class "edit"
+            , value todo.description
+            , name "title"
+            , id ("todo-" ++ toString todo.id)
+            , onInput (UpdateEntry todo.id)
+            ]
+            []
         ]
 
 
@@ -276,7 +292,7 @@ viewControlsClear entriesCompleted =
 infoFooter : Html msg
 infoFooter =
     footer [ class "info" ]
-        [p []
+        [ p []
             [ text "Written by "
             , a [ href "https://github.com/evancz" ] [ text "Evan Czaplicki" ]
             ]

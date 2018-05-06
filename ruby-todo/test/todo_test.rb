@@ -121,7 +121,7 @@ describe "Todo list" do
           Entry.new(id: 0, description: "go forward in time", completed: false)
       ]),
       Model.new(next_id: 3, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: false), 
+          Entry.new(id: 0, description: "go forward in time", completed: false),
           Entry.new(id: 2, description: "delete this item", completed: false)
       ]),
       Model.new(next_id: 3, new_entry_field: "", entries: [
@@ -134,19 +134,19 @@ describe "Todo list" do
           Entry.new(id: 0, description: "go forward in time", completed: false)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: false), 
+          Entry.new(id: 0, description: "go forward in time", completed: false),
           Entry.new(id: 3, description: "go backward in time", completed: false)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: true), 
+          Entry.new(id: 0, description: "go forward in time", completed: true),
           Entry.new(id: 3, description: "go backward in time", completed: false)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: true), 
+          Entry.new(id: 0, description: "go forward in time", completed: true),
           Entry.new(id: 3, description: "go backward in time", completed: true)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
-          Entry.new(id: 0, description: "go forward in time", completed: true), 
+          Entry.new(id: 0, description: "go forward in time", completed: true),
           Entry.new(id: 3, description: "go backward in time", completed: false)
       ]),
       Model.new(next_id: 4, new_entry_field: "", entries: [
@@ -158,6 +158,8 @@ describe "Todo list" do
     # but comparing one step at a time gives more readable error messages:
 
     assert_equal expected_history.size, actual_history.size
+    assert_equal expected_history, actual_history
+
     expected_history.zip(actual_history).each.with_index do |(expected, actual), index|
       assert_equal expected, actual, "History mismatch at step #{index}"
     end
