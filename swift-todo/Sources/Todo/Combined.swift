@@ -219,7 +219,7 @@ class TodoTests {
          XCTAssertEqual_A([11], newModel.entries.map { $0.id })
      }
 
-/*
+//*
      func testTimeTravel() {
         let actualHistory = Engine.runWithHistory(on: Model(), applying: [
              .updateNewEntryField("go forward in time"),
@@ -282,12 +282,12 @@ class TodoTests {
              ]),
          ]
 
-         XCTAssertEqual(expectedHistory.count, actualHistory.count)
+         XCTAssertEqual_I(expectedHistory.count, actualHistory.count)
          for (index, (expected, actual)) in zip(expectedHistory, actualHistory).enumerated() {
-             XCTAssertEqual(expected, actual, "History mismatch at step \(index)")
+             XCTAssertEqual_mess(expected, actual, "History mismatch at step \(index)")
          }
     }
-*/
+//*/
 
 
     private func XCTAssertEqual_I(_ expectedValue: Int, _ value: Int){
@@ -308,6 +308,11 @@ class TodoTests {
     private func XCTAssertEqual_A(_ expectedValue: [Int], _ value: [Int]){
         if expectedValue != value{
             print("\(expectedValue) != \(value)")
+        }
+    }
+    private func XCTAssertEqual_mess(_ expectedValue: Model, _ value: Model, _ message: String){
+        if expectedValue != value{
+            print(message)
         }
     }
 
@@ -338,4 +343,7 @@ tests.testDelete()
 
 tests = TodoTests()
 tests.testDeleteAllCompleted()
+
+tests = TodoTests()
+tests.testTimeTravel()
 
