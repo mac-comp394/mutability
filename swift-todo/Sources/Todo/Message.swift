@@ -14,7 +14,8 @@ enum Message {
     case delete(Int)
     case deleteAllCompleted
 
-    func apply(to model: Model) {
+    func apply(to oldModel: Model) -> Model {
+        var model = oldModel
         switch(self) {
             case .add:
                 if !model.newEntryField.isBlank() {
@@ -27,11 +28,17 @@ enum Message {
                 model.newEntryField = str
 
             case .check(let id, let isCompleted):
+                var newEntries: [Entry] = []
                 for entry in model.entries {
                     if(entry.id == id) {
-                        entry.completed = isCompleted
+                        var newEntry = entry
+                        newEntry.completed = isCompleted
+                        newEntries.append(newEntry)
+                    } else{
+                        newEntries.append(entry)
                     }
                 }
+                model.entries = newEntries
 
             case .delete(let id):
                 model.entries.remove { $0.id == id }
@@ -39,5 +46,6 @@ enum Message {
             case .deleteAllCompleted:
                 model.entries.remove { $0.completed }
         }
+        return model
     }
 }

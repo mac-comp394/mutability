@@ -13,9 +13,10 @@ struct Engine {
     }
 
     static func runWithHistory(on model: Model, applying messages: [Message]) -> [Model] {
+    	var lastModel = model
         return messages.map { message in
-          message.apply(to: model)
-          return model
+          lastModel = message.apply(to: lastModel)
+          return lastModel
         }
     }
 }
